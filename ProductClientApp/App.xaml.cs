@@ -1,11 +1,31 @@
-﻿namespace ProductClientApp;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
+using ProductClientApp.Services;
+using ProductClientApp.ViewModels;
+using ProductClientApp.Views;
 
-public partial class App : Application
+namespace ProductClientApp
 {
-    public App()
+    public partial class App : Application
     {
-        InitializeComponent();
+        public static ServiceProvider ServiceProvider { get; private set; }
 
-        MainPage = new AppShell();
+        public App()
+        {
+            InitializeComponent();
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            ServiceProvider = serviceCollection.BuildServiceProvider();
+
+            MainPage = new AppShell();
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<IProductService, ProductService>();
+            services.AddTransient<ProductViewModel>();
+            services.AddTransient<ProductDetailsPage>();
+        }
     }
+
 }
